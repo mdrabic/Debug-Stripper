@@ -1,0 +1,31 @@
+#Name: Test.source
+#Date: 8/21/2011
+#Description: A fake source file that can be used to test the debug-stripper. 
+
+
+// This should not be removed
+/* This should not be removed */
+#  This should not be removed 
+<!-- This should not be removed -->
+
+This should not be removed
+
+// @DEBUG
+This will be removed. (1)
+This will be removed. (2)
+// @END DEBUG
+
+/* @DEBUG */
+ This will be removed. (3) 
+ This will be removed. (4)
+/* @END DEBUG
+
+# @DEBUG 
+ This will be removed. (5)
+ This will be removed. (6)
+# @END DEBUG
+
+<!-- @DEBUG -->
+ This will be removed. (7)
+ This will be removed. (8)
+<!-- @END DEBUG -->
