@@ -16,7 +16,7 @@
 
 #Notes & TODO:
 # -use strict vars
-# -
+# -standard exit method
 #-------------------------------------------------------------------------------
 
 
@@ -27,24 +27,18 @@ use Getopt::Std;
 #Globals
 my $debugTagStart = "\@DEBUG";	     #Remove Code Starting Here
 my $debugTagFinish = "\@END DEBUG";  #Stop Removing Code Here
-my $sourceFile;			     #Source File to strip - arg[0]
+my $sourceFile;			     		 #Source File to strip - arg[0]
 my $cleanSource;                     #Debug-Free Output file -arg[1]
-my $results;	     		     #Listing of Removed Code -arg[2] 
-my $debugCode = 0; 	             #State Variable
-my $linesRemoved = 0;                #Number of lines Removed
-my $lineNumber = 0;                  #The current line number 
+my $results;	     		     	 #Results file holding Removed Code -arg[2] 
+my $simulate;			     		 #Simulate - Don't remove lines
+
+
 
 
 
 parse_commandLine_options();
 strip_code();
-
-
-close SOURCE or die $!;
-close CLEAN_SOURCE or die $!; 
-close RESULTS or die $!;
-
-exit;
+clean_up();
 
 
 
@@ -60,7 +54,13 @@ exit;
 # return: none
 sub strip_code
 {
-	open SOURCE, '<', $sourceFile or die $!;#Source code file
+	my $debugCode = 0;      #State Variable 
+	my $linesRemoved = 0;   #Number of lines Removed
+	my $lineNumber = 0;     #The current line number 
+
+
+	#Open the source file, create the cleaned source & results file 
+	open SOURCE, '<', $sourceFile or die $!;        
 	open CLEAN_SOURCE, '>', $cleanSource or die $!;
 	open RESULTS, '>', $results or die "No output file specified\n";
 
@@ -68,6 +68,7 @@ sub strip_code
 	print "\nRemoving code between ".$debugTagStart." and ".$debugTagFinish."\n";
 
 
+	#Main loop to remove debug code
 	while (my $line = <SOURCE>){
 	
 		$lineNumber++;
@@ -91,6 +92,7 @@ sub strip_code
 	}	
 
 
+	print RESULTS "\n\nTotal Lines Removed: ".$linesRemoved;
 	print "Total Lines Removed: ".$linesRemoved."\n\n";
 }
 
@@ -107,11 +109,14 @@ sub strip_code
 sub parse_commandLine_options
 {	
 	#Cmd Options
-	my $optDir  = "d";    # root directory to process from
-	my $optVerbose = "v"; # verbose execution
-	my $optHelp = "h";    # help 
-	my $optSim  = "s";    # future: Simulate/dry-run
-	my $optList = 'd:vh';
+	my $optDir  = "d";       # root directory to process from
+	my $optVerbose = "v";    # verbose execution
+	my $optHelp = "h";       # help 
+	my $optSim  = "s";       # future: Simulate/dry-run
+	my $optResultFile = "o"; # Write results to output file
+	my $optCleanSrc = "c";	 # Create cleaned source file
+
+	my $optList = 'o:d:c:vh';
 	my %opts;
 	
 	getopts( "$optList", \%opts );
@@ -151,20 +156,17 @@ sub parse_commandLine_options
 }
 	
 
-	
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#name clean_up
+#description close all files that have been opened and exit from the program.
+#params none
+#return none
+sub clean_up
+{
+	close SOURCE or die $!;
+	close CLEAN_SOURCE or die $!; 
+	close RESULTS or die $!;
+	exit;
+}
 
