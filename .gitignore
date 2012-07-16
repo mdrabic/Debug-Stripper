@@ -1,0 +1,6 @@
+#Ignore Eclipse files
+.project
+
+#Ignore generated test files
+test/results.txt
+test/clean_source.txt
