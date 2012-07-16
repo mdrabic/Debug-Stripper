@@ -22,15 +22,16 @@
 
 #Imports 
 use Getopt::Std;
-
+use Cwd;
 
 #Globals
 my $debugTagStart = "\@DEBUG";	     #Remove Code Starting Here
 my $debugTagFinish = "\@END DEBUG";  #Stop Removing Code Here
-my $sourceFile;			     		 #Source File to strip - arg[0]
+my $sourceFile;			     #Source File to strip - arg[0]
 my $cleanSource;                     #Debug-Free Output file -arg[1]
-my $results;	     		     	 #Results file holding Removed Code -arg[2] 
-my $simulate;			     		 #Simulate - Don't remove lines
+my $results;	     		     #Results file holding Removed Code -arg[2] 
+my $simulate;			     #Simulate - Don't remove lines
+my $rootDir;			     #Directory - Batch processing 
 
 
 
@@ -109,18 +110,17 @@ sub strip_code
 sub parse_commandLine_options
 {	
 	#Cmd Options
-	my $optDir  = "d";       # root directory to process from
+	my $optDir  = "d";       # root directory to process from 
 	my $optVerbose = "v";    # verbose execution
 	my $optHelp = "h";       # help 
 	my $optSim  = "s";       # future: Simulate/dry-run
-	my $optResultFile = "o"; # Write results to output file
 	my $optCleanSrc = "c";	 # Create cleaned source file
 
-	my $optList = 'o:d:c:vh';
+	my $optList = 'd:c:vh';
 	my %opts;
 	
 	getopts( "$optList", \%opts );
-	
+
 
 	#Parse for 'help' option
 	if( $opts{$optHelp} == 1 ){
@@ -128,19 +128,17 @@ sub parse_commandLine_options
 		exit;
 	}
 
-	#Find if a root prjoect directory specified
-	if( $opts{$optDir} eq ""){
-		#display option value error
-		exit;
+	#TODO: Implement directory option 
+	if( $opts{$optDir} ne ""){
+	#	$rootDir = getcwd();
 	} 
 	else {
-		#parse root directory
+		$rootDir = getcwd();
 	} 
 
-	#Parse for Verbose mode
+	#TODO: Implement verbose mode
 	if( $opts{$optVerbose} == 1 ){
-		#set output mode
-		print "verbose set";
+		print "verbose set\n";
 	}
 
 	#Parse the source and output param 
@@ -151,6 +149,7 @@ sub parse_commandLine_options
 	}   
 	else{
 		#Incorrect file names. 
+		print "Non-acceptable file type.\n";
 		exit;
 	}
 }
